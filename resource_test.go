@@ -1,6 +1,7 @@
 package api_test
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -25,6 +26,7 @@ func (s Sample) AllowedMethods() []string {
 
 func testMethod(m string, t *testing.T) {
 	r, _ := api.NewHandler(api.Handlers{"/sample/{sampleId}": (Sample{})})(
+		context.TODO(),
 		events.APIGatewayProxyRequest{
 			Resource:       "/sample/{sampleId}",
 			PathParameters: map[string]string{"sampleId": "1"},
@@ -65,6 +67,7 @@ func TestResource_AllowMethods(t *testing.T) {
 	}
 
 	r, err := api.NewHandler(api.Handlers{"/foo/{fooId}": (Foo{})})(
+		context.TODO(),
 		events.APIGatewayProxyRequest{
 			Resource:       "/foo/{fooId}",
 			PathParameters: map[string]string{"fooId": "1"},
