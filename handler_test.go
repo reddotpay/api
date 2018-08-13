@@ -1,6 +1,7 @@
 package api_test
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -16,7 +17,7 @@ func (t Task) AllowedMethods() []string {
 	return []string{http.MethodGet, http.MethodTrace}
 }
 
-func (t Task) Get(r api.Request, w *api.Response) error {
+func (t Task) Get(ctx context.Context, r api.Request, w *api.Response) error {
 	w.StatusCode = 200
 	return w.Output(map[string]string{"foo": "bar"})
 }
@@ -31,6 +32,7 @@ func ExampleNewHandler() {
 
 	// undeclared resource
 	r, err := api.NewHandler(apiHandler)(
+		context.TODO(),
 		events.APIGatewayProxyRequest{
 			Resource:   "/undeclared",
 			HTTPMethod: http.MethodGet,
@@ -45,6 +47,7 @@ func ExampleNewHandler() {
 
 	// if method was not set
 	r, err = api.NewHandler(apiHandler)(
+		context.TODO(),
 		events.APIGatewayProxyRequest{
 			Resource:       "/task/{taskId}",
 			PathParameters: map[string]string{"taskId": "1"},
@@ -60,6 +63,7 @@ func ExampleNewHandler() {
 
 	// if method was not allowed
 	r, err = api.NewHandler(apiHandler)(
+		context.TODO(),
 		events.APIGatewayProxyRequest{
 			Resource:       "/task/{taskId}",
 			PathParameters: map[string]string{"taskId": "1"},
@@ -75,6 +79,7 @@ func ExampleNewHandler() {
 
 	// happy scenario
 	r, err = api.NewHandler(apiHandler)(
+		context.TODO(),
 		events.APIGatewayProxyRequest{
 			Resource:       "/task/{taskId}",
 			PathParameters: map[string]string{"taskId": "1"},

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -11,8 +12,8 @@ import (
 type Handlers map[string]ResourceInterface
 
 // NewHandler returns a callback handler for (AWS) APIGateway
-func NewHandler(h Handlers) func(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	return func(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func NewHandler(h Handlers) func(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	return func(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 		var err error
 
 		r := Request(req)
@@ -22,7 +23,7 @@ func NewHandler(h Handlers) func(req events.APIGatewayProxyRequest) (events.APIG
 		}
 
 		if _, ok := h[p]; ok {
-			w, err = triggerMethod(h[p], r)
+			w, err = triggerMethod(ctx, h[p], r)
 		} else {
 			w, err = defaultHandler(r)
 			err = fmt.Errorf("api.NewHandler: undeclared handler `%s`", p)

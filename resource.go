@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -10,18 +11,18 @@ import (
 type ResourceInterface interface {
 	AllowedMethods() []string
 
-	Get(Request, *Response) error
+	Get(context.Context, Request, *Response) error
 
-	Post(Request, *Response) error
+	Post(context.Context, Request, *Response) error
 
-	Patch(Request, *Response) error
+	Patch(context.Context, Request, *Response) error
 
-	Put(Request, *Response) error
+	Put(context.Context, Request, *Response) error
 
-	Delete(Request, *Response) error
+	Delete(context.Context, Request, *Response) error
 }
 
-func triggerMethod(r ResourceInterface, req Request) (Response, error) {
+func triggerMethod(ctx context.Context, r ResourceInterface, req Request) (Response, error) {
 	var (
 		err error
 		w   = Response{}
@@ -38,19 +39,19 @@ func triggerMethod(r ResourceInterface, req Request) (Response, error) {
 		if i == req.HTTPMethod {
 			switch i {
 			case http.MethodGet:
-				err = r.Get(req, &w)
+				err = r.Get(ctx, req, &w)
 
 			case http.MethodPost:
-				err = r.Post(req, &w)
+				err = r.Post(ctx, req, &w)
 
 			case http.MethodPatch:
-				err = r.Patch(req, &w)
+				err = r.Patch(ctx, req, &w)
 
 			case http.MethodPut:
-				err = r.Put(req, &w)
+				err = r.Put(ctx, req, &w)
 
 			case http.MethodDelete:
-				err = r.Delete(req, &w)
+				err = r.Delete(ctx, req, &w)
 
 			default:
 				w.Stat(http.StatusMethodNotAllowed)
@@ -75,31 +76,31 @@ func (r Resource) AllowedMethods() []string {
 }
 
 // Get executes a GET http action
-func (r Resource) Get(req Request, w *Response) error {
+func (r Resource) Get(ctx context.Context, req Request, w *Response) error {
 	w.Stat(http.StatusMethodNotAllowed)
 	return nil
 }
 
 // Post executes a POST http action
-func (r Resource) Post(req Request, w *Response) error {
+func (r Resource) Post(ctx context.Context, req Request, w *Response) error {
 	w.Stat(http.StatusMethodNotAllowed)
 	return nil
 }
 
 // Patch executes a PATCH http action
-func (r Resource) Patch(req Request, w *Response) error {
+func (r Resource) Patch(ctx context.Context, req Request, w *Response) error {
 	w.Stat(http.StatusMethodNotAllowed)
 	return nil
 }
 
 // Put executes a PUT http action
-func (r Resource) Put(req Request, w *Response) error {
+func (r Resource) Put(ctx context.Context, req Request, w *Response) error {
 	w.Stat(http.StatusMethodNotAllowed)
 	return nil
 }
 
 // Delete executes a DELETE http action
-func (r Resource) Delete(req Request, w *Response) error {
+func (r Resource) Delete(ctx context.Context, req Request, w *Response) error {
 	w.Stat(http.StatusMethodNotAllowed)
 	return nil
 }
