@@ -83,7 +83,7 @@ https://httpstatuses.com
 #### func  NewHandler
 
 ```go
-func NewHandler(h Handlers) func(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
+func NewHandler(h Handlers) func(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error)
 ```
 NewHandler returns a callback handler for (AWS) APIGateway
 
@@ -128,35 +128,35 @@ AllowedMethods returns the list of allowed methods for this resource
 #### func (Resource) Delete
 
 ```go
-func (r Resource) Delete(req Request, w *Response) error
+func (r Resource) Delete(ctx context.Context, req Request, w *Response) error
 ```
 Delete executes a DELETE http action
 
 #### func (Resource) Get
 
 ```go
-func (r Resource) Get(req Request, w *Response) error
+func (r Resource) Get(ctx context.Context, req Request, w *Response) error
 ```
 Get executes a GET http action
 
 #### func (Resource) Patch
 
 ```go
-func (r Resource) Patch(req Request, w *Response) error
+func (r Resource) Patch(ctx context.Context, req Request, w *Response) error
 ```
 Patch executes a PATCH http action
 
 #### func (Resource) Post
 
 ```go
-func (r Resource) Post(req Request, w *Response) error
+func (r Resource) Post(ctx context.Context, req Request, w *Response) error
 ```
 Post executes a POST http action
 
 #### func (Resource) Put
 
 ```go
-func (r Resource) Put(req Request, w *Response) error
+func (r Resource) Put(ctx context.Context, req Request, w *Response) error
 ```
 Put executes a PUT http action
 
@@ -166,15 +166,15 @@ Put executes a PUT http action
 type ResourceInterface interface {
 	AllowedMethods() []string
 
-	Get(Request, *Response) error
+	Get(context.Context, Request, *Response) error
 
-	Post(Request, *Response) error
+	Post(context.Context, Request, *Response) error
 
-	Patch(Request, *Response) error
+	Patch(context.Context, Request, *Response) error
 
-	Put(Request, *Response) error
+	Put(context.Context, Request, *Response) error
 
-	Delete(Request, *Response) error
+	Delete(context.Context, Request, *Response) error
 }
 ```
 
