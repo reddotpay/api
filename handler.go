@@ -22,7 +22,9 @@ func NewHandler(h Handlers) func(ctx context.Context, req events.APIGatewayProxy
 			StatusCode: http.StatusNotFound,
 		}
 
-		if _, ok := h[p]; ok {
+		if r.Resource == "/ping" && r.HTTPMethod == http.MethodGet {
+			w, err = ping(r)
+		} else if _, ok := h[p]; ok {
 			w, err = triggerMethod(ctx, h[p], r)
 		} else {
 			w, err = defaultHandler(r)
@@ -31,6 +33,18 @@ func NewHandler(h Handlers) func(ctx context.Context, req events.APIGatewayProxy
 
 		return events.APIGatewayProxyResponse(w), err
 	}
+}
+
+func ping(req Request) (Response, error) {
+	var w Response
+
+	w.Headers = map[string]string{}
+
+	err := w.Stat(http.StatusNoContent)
+	w.Headers["Allow"] = "GET"
+	w.Headers["Accept"] = "application/json"
+
+	return w, err
 }
 
 func defaultHandler(req Request) (Response, error) {

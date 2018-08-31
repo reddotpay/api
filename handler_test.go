@@ -93,6 +93,21 @@ func ExampleNewHandler() {
 		fmt.Println("error: ", err.Error())
 	}
 
+	// ping
+	r, err = api.NewHandler(apiHandler)(
+		context.TODO(),
+		events.APIGatewayProxyRequest{
+			Resource:   "/ping",
+			HTTPMethod: http.MethodGet,
+		},
+	)
+
+	fmt.Printf("Response [%d] [allow: `%s`, accept: `%s`]: `%s`\n",
+		r.StatusCode, r.Headers["Allow"], r.Headers["Accept"], r.Body)
+	if err != nil {
+		fmt.Println("error: ", err.Error())
+	}
+
 	// Output:
 	// Response [404] [allow: ``, accept: ``]: `{"message":"Not Found"}`
 	// error:  api.NewHandler: undeclared handler `/undeclared`
@@ -101,4 +116,5 @@ func ExampleNewHandler() {
 	// Response [405] [allow: `GET, TRACE`, accept: `application/json`]: `{"message":"Method Not Allowed"}`
 	// error:  api.triggerMethod: explicitly rejected request `/task/{taskId}`:`TRACE`
 	// Response [200] [allow: `GET, TRACE`, accept: `application/json`]: `{"foo":"bar"}`
+	// Response [204] [allow: `GET`, accept: `application/json`]: `{"message":"No Content"}`
 }
