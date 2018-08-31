@@ -11,6 +11,19 @@ import (
 // Handlers enumerates all requests being handled
 type Handlers map[string]ResourceInterface
 
+// Ping is a hackable function for /ping:GET resource
+var Ping = func(req Request) (Response, error) {
+	var w Response
+
+	w.Headers = map[string]string{}
+
+	err := w.Stat(http.StatusOK)
+	w.Headers["Allow"] = "GET"
+	w.Headers["Accept"] = "application/json"
+
+	return w, err
+}
+
 // NewHandler returns a callback handler for (AWS) APIGateway
 func NewHandler(h Handlers) func(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	return func(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -23,7 +36,7 @@ func NewHandler(h Handlers) func(ctx context.Context, req events.APIGatewayProxy
 		}
 
 		if r.Resource == "/ping" && r.HTTPMethod == http.MethodGet {
-			w, err = ping(r)
+			w, err = Ping(r)
 		} else if _, ok := h[p]; ok {
 			w, err = triggerMethod(ctx, h[p], r)
 		} else {
@@ -33,18 +46,6 @@ func NewHandler(h Handlers) func(ctx context.Context, req events.APIGatewayProxy
 
 		return events.APIGatewayProxyResponse(w), err
 	}
-}
-
-func ping(req Request) (Response, error) {
-	var w Response
-
-	w.Headers = map[string]string{}
-
-	err := w.Stat(http.StatusNoContent)
-	w.Headers["Allow"] = "GET"
-	w.Headers["Accept"] = "application/json"
-
-	return w, err
 }
 
 func defaultHandler(req Request) (Response, error) {

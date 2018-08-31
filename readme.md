@@ -6,6 +6,21 @@
 ## Usage
 
 ```go
+var Ping = func(req Request) (Response, error) {
+	var w Response
+
+	w.Headers = map[string]string{}
+
+	err := w.Stat(http.StatusOK)
+	w.Headers["Allow"] = "GET"
+	w.Headers["Accept"] = "application/json"
+
+	return w, err
+}
+```
+Ping is a hackable function for /ping:GET resource
+
+```go
 var StatusMessage = map[int]string{
 
 	100: "Continue",

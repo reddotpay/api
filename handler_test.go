@@ -116,5 +116,5 @@ func ExampleNewHandler() {
 	// Response [405] [allow: `GET, TRACE`, accept: `application/json`]: `{"message":"Method Not Allowed"}`
 	// error:  api.triggerMethod: explicitly rejected request `/task/{taskId}`:`TRACE`
 	// Response [200] [allow: `GET, TRACE`, accept: `application/json`]: `{"foo":"bar"}`
-	// Response [204] [allow: `GET`, accept: `application/json`]: `{"message":"No Content"}`
+	// Response [200] [allow: `GET`, accept: `application/json`]: `{"message":"OK"}`
 }
