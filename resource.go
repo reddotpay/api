@@ -34,6 +34,7 @@ func triggerMethod(ctx context.Context, r ResourceInterface, req Request) (Respo
 
 	w.Headers["Allow"] = strings.Join(r.AllowedMethods(), ", ")
 	w.Headers["Accept"] = "application/json"
+	w.Headers["Cache-Control"] = "no-cache, no-store"
 
 	for _, i := range r.AllowedMethods() {
 		if i == req.HTTPMethod {
